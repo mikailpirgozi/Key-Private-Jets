@@ -95,7 +95,7 @@ const generateRandomAircraft = (id: number): Aircraft => {
     endX,
     endY,
     duration: 25 + Math.random() * 35, // 25-60 seconds
-    delay: Math.random() * 20, // 0-20 seconds delay
+    delay: Math.random() * 5, // 0-5 seconds delay (kratší delay)
     rotation: angle,
     size,
     opacity: 0.35 + Math.random() * 0.35, // 0.35-0.7 opacity
@@ -109,24 +109,30 @@ export function FloatingAircraft() {
   const styleRef = useRef<HTMLStyleElement | null>(null)
 
   useEffect(() => {
-    setMounted(true)
-    
     // Create style element for keyframes
     const style = document.createElement('style')
     styleRef.current = style
     document.head.appendChild(style)
     
-    // Generate initial aircraft
-    const initialAircraft = Array.from({ length: 10 }, (_, i) => generateRandomAircraft(i))
+    // Generate initial aircraft - 12 lietadiel
+    const initialAircraft = Array.from({ length: 12 }, (_, i) => {
+      const plane = generateRandomAircraft(i)
+      // Všetky lietadlá štartujú OKAMŽITE - žiadny delay
+      plane.delay = 0
+      return plane
+    })
     setAircraft(initialAircraft)
     updateKeyframes(initialAircraft, style)
+    
+    // Nastaví mounted hneď po vytvorení lietadiel
+    setMounted(true)
 
     // Regenerate aircraft periodically to keep them moving
     const interval = setInterval(() => {
-      const newAircraft = Array.from({ length: 10 }, (_, i) => generateRandomAircraft(i))
+      const newAircraft = Array.from({ length: 12 }, (_, i) => generateRandomAircraft(i))
       setAircraft(newAircraft)
       updateKeyframes(newAircraft, style)
-    }, 25000) // Regenerate every 25 seconds
+    }, 30000) // Regenerate every 30 seconds
 
     return () => {
       clearInterval(interval)
@@ -148,19 +154,16 @@ export function FloatingAircraft() {
       
       return `
         @keyframes fly-${plane.id} {
-          from {
+          0% {
             left: ${plane.startX}vw;
             top: ${plane.startY}vh;
             transform: rotate(${finalRotation}deg);
-            opacity: 0;
-          }
-          10% {
             opacity: ${plane.opacity};
           }
-          90% {
+          95% {
             opacity: ${plane.opacity};
           }
-          to {
+          100% {
             left: ${plane.endX}vw;
             top: ${plane.endY}vh;
             transform: rotate(${finalRotation}deg);
