@@ -37,7 +37,8 @@ export function rateLimit(req: NextRequest): { success: boolean; remaining: numb
 setInterval(() => {
   const now = Date.now()
   Object.keys(store).forEach((key) => {
-    if (now > store[key].resetTime) {
+    const entry = store[key]
+    if (entry && now > entry.resetTime) {
       delete store[key]
     }
   })

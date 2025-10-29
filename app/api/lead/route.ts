@@ -33,7 +33,7 @@ function selectAffiliate(): 'villiers' | 'jettly' | 'nuco' {
   const affiliates: Array<'villiers' | 'jettly' | 'nuco'> = ['villiers', 'jettly', 'nuco']
   const selected = affiliates[lastAffiliateIndex]
   lastAffiliateIndex = (lastAffiliateIndex + 1) % affiliates.length
-  return selected
+  return selected ?? 'villiers' // Fallback to villiers
 }
 
 export async function POST(req: NextRequest) {
