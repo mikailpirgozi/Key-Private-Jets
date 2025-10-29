@@ -4,16 +4,18 @@ import { AircraftCategories } from '@/components/sections/aircraft-categories'
 import { HowItWorks } from '@/components/sections/how-it-works'
 import { Testimonials } from '@/components/sections/testimonials'
 import { FAQ } from '@/components/sections/faq'
-import { generateFAQSchema, injectSchema } from '@/lib/schema'
+import { generateFAQSchema, generateOrganizationSchema, injectSchema } from '@/lib/schema'
 import { FAQS } from '@/lib/data/faqs'
 
 export default function Home() {
   const faqSchema = generateFAQSchema(FAQS)
+  const orgSchema = generateOrganizationSchema()
 
   return (
     <>
-      {/* Inject FAQ Schema for SEO */}
+      {/* Inject Schemas for SEO */}
       {injectSchema(faqSchema)}
+      {injectSchema(orgSchema)}
 
       {/* Page Sections */}
       <Hero />
@@ -25,3 +27,4 @@ export default function Home() {
     </>
   )
 }
+

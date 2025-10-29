@@ -72,8 +72,8 @@ export function NewsletterForm({ className = '' }: NewsletterFormProps) {
   return (
     <div className={className}>
       {isSuccess ? (
-        <div className="p-4 bg-green-50 border border-green-200 rounded-md">
-          <p className="text-sm text-green-600 font-medium">
+        <div className="p-4 bg-green-500/10 border border-green-500/30 rounded-lg backdrop-blur-sm">
+          <p className="text-sm text-green-400 font-medium">
             ✓ Successfully subscribed! Check your email for confirmation.
           </p>
         </div>
@@ -85,16 +85,16 @@ export function NewsletterForm({ className = '' }: NewsletterFormProps) {
                 type="email"
                 placeholder="Enter your email"
                 {...register('email')}
-                className={errors.email ? 'border-red-500' : ''}
+                className={`bg-gray-800/50 border-gray-700 text-white placeholder:text-gray-500 focus:border-gold-500 ${errors.email ? 'border-red-500' : ''}`}
               />
               {errors.email && (
-                <p className="text-sm text-red-500 mt-1">{errors.email.message}</p>
+                <p className="text-sm text-red-400 mt-1">{errors.email.message}</p>
               )}
             </div>
             <Button
               type="submit"
               disabled={isSubmitting}
-              className="bg-gold-500 hover:bg-gold-600 text-primary-900 font-semibold whitespace-nowrap"
+              className="bg-gradient-to-r from-gold-400 to-gold-600 hover:from-gold-500 hover:to-gold-700 text-gray-900 font-semibold whitespace-nowrap shadow-lg"
             >
               {isSubmitting ? (
                 <>
@@ -108,10 +108,10 @@ export function NewsletterForm({ className = '' }: NewsletterFormProps) {
           </div>
 
           {error && (
-            <p className="text-sm text-red-500">{error}</p>
+            <p className="text-sm text-red-400">{error}</p>
           )}
 
-          <p className="text-xs text-muted-foreground">
+          <p className="text-xs text-gray-500">
             Get exclusive empty leg deals and private aviation insights. Unsubscribe anytime.
           </p>
         </form>
