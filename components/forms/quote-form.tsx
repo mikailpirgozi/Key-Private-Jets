@@ -17,10 +17,11 @@ type LeadFormData = z.infer<typeof leadFormSchema>
 interface QuoteFormProps {
   defaultFrom?: string
   defaultTo?: string
+  aircraft_preference?: string
   className?: string
 }
 
-export function QuoteForm({ defaultFrom, defaultTo, className = '' }: QuoteFormProps) {
+export function QuoteForm({ defaultFrom, defaultTo, aircraft_preference, className = '' }: QuoteFormProps) {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isSuccess, setIsSuccess] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -35,6 +36,7 @@ export function QuoteForm({ defaultFrom, defaultTo, className = '' }: QuoteFormP
     defaultValues: {
       from_city: defaultFrom || '',
       to_city: defaultTo || '',
+      aircraft_preference: aircraft_preference || '',
       passengers: 4,
       gdpr_consent: false,
       marketing_consent: false,

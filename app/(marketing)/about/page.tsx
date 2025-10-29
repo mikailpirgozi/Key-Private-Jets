@@ -1,6 +1,6 @@
 import { Metadata } from 'next'
 import { generatePageMetadata } from '@/lib/seo'
-import { Plane, Users, Shield, Clock, Award, Globe } from 'lucide-react'
+import { Plane, Shield, Clock, Award, Globe } from 'lucide-react'
 
 export const metadata: Metadata = generatePageMetadata({
   title: 'About KeyPrivateJet - Your Trusted Private Aviation Partner',
