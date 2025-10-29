@@ -3,6 +3,7 @@ import { Metadata } from 'next'
 import { MAJOR_CITIES, getCityBySlug } from '@/lib/data/cities'
 import { POPULAR_ROUTES } from '@/lib/data/routes'
 import { generateCityMetadata } from '@/lib/seo'
+import { generateBreadcrumbSchema, generateFAQSchema, injectSchema } from '@/lib/schema'
 import { RouteCard } from '@/components/shared/route-card'
 import { QuoteForm } from '@/components/forms/quote-form'
 import { Button } from '@/components/ui/button'
@@ -51,8 +52,42 @@ export default function CityPage({ params }: CityPageProps) {
   const routesToCity = POPULAR_ROUTES.filter((route) => route.to === city.code)
   const relatedRoutes = [...routesFromCity, ...routesToCity].slice(0, 4)
 
+  const breadcrumbSchema = generateBreadcrumbSchema([
+    { name: 'Home', url: '/' },
+    { name: 'Charter', url: '/charter' },
+    { name: city.name, url: `/charter/${city.slug}` },
+  ])
+
+  const cityFAQs = [
+    {
+      question: `What's the minimum charter time from ${city.name}?`,
+      answer: 'Typically 1 hour of flight time, though minimum billing may apply. Contact us for exact details.',
+    },
+    {
+      question: `How far in advance should I book from ${city.name}?`,
+      answer: 'We can accommodate same-day bookings, but recommend 2-7 days for better aircraft selection.',
+    },
+    {
+      question: `Which airports can I use from ${city.name}?`,
+      answer: `You can use any of our ${city.airports.length} available airports: ${city.airports.join(', ')}.`,
+    },
+    {
+      question: 'What aircraft types are available?',
+      answer: 'From light jets ($2,500/hr) to heavy jets ($15,000/hr). All maintenance and crew included.',
+    },
+    {
+      question: `Is ${city.name} a good hub for national flights?`,
+      answer: `Yes, ${city.name} is a major aviation hub with excellent connectivity to all major US destinations.`,
+    },
+  ]
+
+  const faqSchema = generateFAQSchema(cityFAQs)
+
   return (
     <>
+      {/* Inject Schemas */}
+      {injectSchema(breadcrumbSchema)}
+      {injectSchema(faqSchema)}
       {/* Hero Section */}
       <section className="relative bg-gradient-to-br from-primary-900 to-primary-950 py-20 text-white">
         <div className="container mx-auto px-4">

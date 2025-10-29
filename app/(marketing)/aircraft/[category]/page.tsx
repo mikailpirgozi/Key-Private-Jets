@@ -40,6 +40,19 @@ export default function AircraftCategoryPage({ params }: AircraftPageProps) {
     notFound()
   }
 
+  const productSchema = generateProductSchema({
+    name: `${aircraft.name} Charter - Pricing & Availability`,
+    description: `Charter a ${aircraft.name}. Capacity: ${aircraft.capacity}. Range: ${aircraft.range}. Hourly rates from ${formatCurrency(aircraft.hourlyRate.from)}.`,
+    priceFrom: aircraft.hourlyRate.from,
+    priceTo: aircraft.hourlyRate.to,
+  })
+
+  const breadcrumbSchema = generateBreadcrumbSchema([
+    { name: 'Home', url: '/' },
+    { name: 'Aircraft', url: '/aircraft' },
+    { name: aircraft.name, url: `/aircraft/${aircraft.slug}` },
+  ])
+
   const aircraftFAQs = [
     {
       question: `What is a ${aircraft.name}?`,
@@ -62,19 +75,6 @@ export default function AircraftCategoryPage({ params }: AircraftPageProps) {
       answer: `Amenities include: ${aircraft.features.join(', ')}, plus catering, entertainment systems, and more.`,
     },
   ]
-
-  const productSchema = generateProductSchema({
-    name: `${aircraft.name} Charter - Pricing & Availability`,
-    description: `Charter a ${aircraft.name}. Capacity: ${aircraft.capacity}. Range: ${aircraft.range}. Hourly rates from ${formatCurrency(aircraft.hourlyRate.from)}.`,
-    priceFrom: aircraft.hourlyRate.from,
-    priceTo: aircraft.hourlyRate.to,
-  })
-
-  const breadcrumbSchema = generateBreadcrumbSchema([
-    { name: 'Home', url: '/' },
-    { name: 'Aircraft', url: '/aircraft' },
-    { name: aircraft.name, url: `/aircraft/${aircraft.slug}` },
-  ])
 
   const faqSchema = generateFAQSchema(aircraftFAQs)
 
@@ -240,6 +240,28 @@ export default function AircraftCategoryPage({ params }: AircraftPageProps) {
             >
               Get Instant Quote
             </a>
+          </div>
+        </div>
+      </section>
+
+      {/* FAQ Section */}
+      <section className="py-16 bg-gray-50">
+        <div className="container mx-auto px-4">
+          <div className="max-w-3xl mx-auto">
+            <h2 className="text-3xl font-bold font-playfair text-primary-900 mb-12 text-center">
+              Frequently Asked Questions
+            </h2>
+            <div className="space-y-4">
+              {aircraftFAQs.map((faq, idx) => (
+                <details key={idx} className="group bg-white p-6 rounded-lg shadow-sm border border-gray-200 cursor-pointer">
+                  <summary className="flex items-center justify-between font-semibold text-primary-900 group-open:text-gold-500 transition-colors">
+                    <span>{faq.question}</span>
+                    <span className="ml-4">+</span>
+                  </summary>
+                  <p className="mt-4 text-gray-700 leading-relaxed">{faq.answer}</p>
+                </details>
+              ))}
+            </div>
           </div>
         </div>
       </section>
