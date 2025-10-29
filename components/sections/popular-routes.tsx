@@ -65,7 +65,7 @@ export function PopularRoutes() {
               className="transition-all duration-500"
               style={{ transitionDelay: `${index * 100}ms` }}
             >
-              <RouteCard route={route} />
+              <RouteCard route={route} index={index} />
             </div>
           ))}
         </div>

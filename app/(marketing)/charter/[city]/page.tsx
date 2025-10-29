@@ -167,8 +167,8 @@ export default function CityPage({ params }: CityPageProps) {
             </h2>
 
             <div className="grid gap-6 md:grid-cols-2">
-              {relatedRoutes.map((route) => (
-                <RouteCard key={route.id} route={route} />
+              {relatedRoutes.map((route, index) => (
+                <RouteCard key={route.id} route={route} index={index} />
               ))}
             </div>
           </div>
