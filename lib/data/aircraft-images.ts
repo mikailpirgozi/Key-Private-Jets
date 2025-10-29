@@ -1,6 +1,6 @@
 /**
  * Aircraft category images from Unsplash
- * Used throughout the site for aircraft cards and route details
+ * Premium private jets for each category
  */
 
 export const AIRCRAFT_IMAGES = {
@@ -8,7 +8,7 @@ export const AIRCRAFT_IMAGES = {
     main: 'https://images.unsplash.com/photo-1540962351516-ee8131d9ed72?w=800&h=600&fit=crop',
     thumb: 'https://images.unsplash.com/photo-1540962351516-ee8131d9ed72?w=400&h=300&fit=crop',
     alt: 'Light private jet in flight',
-    color: '#D4AF37', // Gold accent
+    color: '#D4AF37',
   },
   'midsize-jets': {
     main: 'https://images.unsplash.com/photo-1583391733183-6ceee0b8e2c0?w=800&h=600&fit=crop',
@@ -31,25 +31,30 @@ export const AIRCRAFT_IMAGES = {
 } as const
 
 /**
- * Route images - generic luxury aviation
- * Used for route cards to add visual interest
+ * City images for route cards
+ * Each city code maps to iconic skylines and landmarks
  */
-export const ROUTE_IMAGES = [
-  'https://images.unsplash.com/photo-1479966405531-bebdecea4cdb?w=800&h=500&fit=crop',
-  'https://images.unsplash.com/photo-1551632786-de41ec08fc6d?w=800&h=500&fit=crop',
-  'https://images.unsplash.com/photo-1550355291-bbee04a37971?w=800&h=500&fit=crop',
-  'https://images.unsplash.com/photo-1464207687429-7505649dae38?w=800&h=500&fit=crop',
-  'https://images.unsplash.com/photo-1540962351516-ee8131d9ed72?w=800&h=500&fit=crop',
-  'https://images.unsplash.com/photo-1583391733183-6ceee0b8e2c0?w=800&h=500&fit=crop',
-  'https://images.unsplash.com/photo-1583391733183-6ceee0b8e2c0?w=800&h=500&fit=crop',
-  'https://images.unsplash.com/photo-1449824913935-59a10b8d2000?w=800&h=500&fit=crop',
-]
+export const CITY_IMAGES: Record<string, string> = {
+  'NYC': 'https://images.unsplash.com/photo-1496442226666-8d4d0e62e6e9?w=800&h=500&fit=crop',
+  'LAX': 'https://images.unsplash.com/photo-1579460979017-a8a6a5a8e496?w=800&h=500&fit=crop',
+  'MIA': 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&h=500&fit=crop',
+  'LAS': 'https://images.unsplash.com/photo-1517457373614-b7152f800fd1?w=800&h=500&fit=crop',
+  'CHI': 'https://images.unsplash.com/photo-1576402187392-3901d3a8c869?w=800&h=500&fit=crop',
+  'DAL': 'https://images.unsplash.com/photo-1522869635100-ce306e08b86d?w=800&h=500&fit=crop',
+  'SFO': 'https://images.unsplash.com/photo-1501594907352-04cda38ebc29?w=800&h=500&fit=crop',
+  'BOS': 'https://images.unsplash.com/photo-1599996410246-05798589b718?w=800&h=500&fit=crop',
+  'HOU': 'https://images.unsplash.com/photo-1599505667736-f4937fb33c33?w=800&h=500&fit=crop',
+  'DEN': 'https://images.unsplash.com/photo-1510784519987-3d71bcdd1f11?w=800&h=500&fit=crop',
+  'SEA': 'https://images.unsplash.com/photo-1606214174585-fe31582dc1d4?w=800&h=500&fit=crop',
+  'MCI': 'https://images.unsplash.com/photo-1549144611-11a5f7a9a8d5?w=800&h=500&fit=crop',
+}
 
 /**
- * Get route image by index - cycles through available images
+ * Get city image by city code
+ * Used for route cards to display destination skylines
  */
-export function getRouteImage(index: number) {
-  return ROUTE_IMAGES[index % ROUTE_IMAGES.length]
+export function getCityImage(cityCode: string): string {
+  return CITY_IMAGES[cityCode] || 'https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?w=800&h=500&fit=crop'
 }
 
 /**

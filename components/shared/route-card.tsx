@@ -1,7 +1,7 @@
 import { Route } from '@/types'
 import { PriceDisplay } from './price-display'
 import { ArrowRight, Clock, MapPin, Sparkles } from 'lucide-react'
-import { getRouteImage } from '@/lib/data/aircraft-images'
+import { getCityImage } from '@/lib/data/aircraft-images'
 import Image from 'next/image'
 import Link from 'next/link'
 
@@ -11,7 +11,8 @@ interface RouteCardProps {
 }
 
 export function RouteCard({ route, index = 0 }: RouteCardProps) {
-  const routeImage = getRouteImage(index)
+  // Use destination city image (or source as fallback)
+  const cityImage = getCityImage(route.to)
   
   return (
     <Link href={`/routes/${route.slug}`} className="block group">
@@ -19,7 +20,7 @@ export function RouteCard({ route, index = 0 }: RouteCardProps) {
         {/* Image Container */}
         <div className="relative h-40 w-full overflow-hidden bg-luxury-black-lighter">
           <Image
-            src={routeImage}
+            src={cityImage}
             alt={`Flight from ${route.from} to ${route.to}`}
             fill
             className="object-cover group-hover:scale-110 transition-transform duration-500"
