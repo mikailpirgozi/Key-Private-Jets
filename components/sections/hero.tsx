@@ -44,10 +44,10 @@ export function Hero() {
           <div className="text-center mb-8">
             <h1 className="text-5xl md:text-7xl font-bold leading-tight mb-4">
               <span className="block text-white drop-shadow-[0_0_30px_rgba(255,255,255,0.3)]">
-                Fly Private.
+                Private Jet Charter
               </span>
               <span className="block text-gradient-gold drop-shadow-[0_0_50px_rgba(212,175,55,0.5)] animate-glow">
-                Fly Now.
+                Instant Quotes
               </span>
             </h1>
 
@@ -58,8 +58,8 @@ export function Hero() {
             </div>
 
             <p className="text-lg text-gray-300 max-w-2xl mx-auto">
-              AI-powered search. Instant quotes. 500+ operators.
-              <span className="block mt-1 text-gold-400 font-semibold">Your perfect flight awaits.</span>
+              Get instant quotes from 500+ top private jet operators. Compare prices, book in minutes, fly within hours. Available 24/7 for charter flights worldwide.
+              <span className="block mt-1 text-gold-400 font-semibold">Your perfect private aviation experience starts here.</span>
             </p>
           </div>
 

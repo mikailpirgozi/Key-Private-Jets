@@ -1,6 +1,7 @@
 import { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { generateRouteMetadata } from '@/lib/seo'
+import { generateProductSchema, generateBreadcrumbSchema, generateFAQSchema, injectSchema } from '@/lib/schema'
 import { getRouteBySlug, POPULAR_ROUTES } from '@/lib/data/routes'
 import { getCityByCode } from '@/lib/data/cities'
 import { QuoteForm } from '@/components/forms/quote-form'
@@ -79,8 +80,50 @@ export default function RoutePage({ params }: RoutePageProps) {
     },
   ]
 
+  const productSchema = generateProductSchema({
+    name: `Private Jet Charter: ${fromCity?.name} to ${toCity?.name}`,
+    description: `Charter a private jet from ${fromCity?.name} to ${toCity?.name}. Flight time ${route.flightTime}. Prices from ${formatCurrency(route.pricing.lightJet.from)}.`,
+    priceFrom: route.pricing.lightJet.from,
+    priceTo: route.pricing.heavyJet.to,
+  })
+
+  const breadcrumbSchema = generateBreadcrumbSchema([
+    { name: 'Home', url: '/' },
+    { name: 'Routes', url: '/routes' },
+    { name: `${fromCity?.name} to ${toCity?.name}`, url: `/routes/${route.slug}` },
+  ])
+
+  const routeFAQs = [
+    {
+      question: `How much does it cost to charter a private jet from ${fromCity?.name} to ${toCity?.name}?`,
+      answer: `Private jet charter from ${fromCity?.name} to ${toCity?.name} costs between ${formatCurrency(route.pricing.lightJet.from)} and ${formatCurrency(route.pricing.heavyJet.to)} depending on aircraft type and flight time of ${route.flightTime}.`,
+    },
+    {
+      question: `What's the flight time from ${fromCity?.name} to ${toCity?.name}?`,
+      answer: `The flight time from ${fromCity?.name} to ${toCity?.name} is approximately ${route.flightTime}, covering a distance of ${route.distance} miles.`,
+    },
+    {
+      question: `Which airports can I use in ${fromCity?.name}?`,
+      answer: `You can depart from multiple private aviation facilities in ${fromCity?.name} including: ${fromCity?.airports.join(', ')}.`,
+    },
+    {
+      question: `Which airports can I arrive at in ${toCity?.name}?`,
+      answer: `You can arrive at multiple private aviation facilities in ${toCity?.name} including: ${toCity?.airports.join(', ')}.`,
+    },
+    {
+      question: 'What is included in the charter price?',
+      answer: 'The charter price includes: professional crew, fuel, aircraft maintenance, catering, ground transportation, and all landing fees. No hidden costs.',
+    },
+  ]
+
+  const faqSchema = generateFAQSchema(routeFAQs)
+
   return (
     <div className="bg-luxury-black min-h-screen">
+      {/* Inject Schemas */}
+      {injectSchema(productSchema)}
+      {injectSchema(breadcrumbSchema)}
+      {injectSchema(faqSchema)}
       {/* Hero Section */}
       <section className="pt-32 pb-20 relative overflow-hidden">
         {/* Background elements */}
@@ -283,6 +326,28 @@ export default function RoutePage({ params }: RoutePageProps) {
             <span>Explore More Routes</span>
             <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform duration-300" />
           </Link>
+        </div>
+      </section>
+
+      {/* FAQ Section */}
+      <section className="py-20 relative border-t border-gold-500/20">
+        <div className="container mx-auto px-4">
+          <div className="max-w-4xl mx-auto">
+            <h2 className="text-3xl font-bold font-playfair text-white mb-12 text-center">
+              Frequently Asked <span className="text-gradient-gold">Questions</span>
+            </h2>
+            <div className="space-y-4">
+              {routeFAQs.map((faq, idx) => (
+                <details key={idx} className="group luxury-card p-6 cursor-pointer">
+                  <summary className="flex items-center justify-between font-semibold text-white group-open:text-gold-400 transition-colors">
+                    <span>{faq.question}</span>
+                    <span className="ml-4">+</span>
+                  </summary>
+                  <p className="mt-4 text-gray-400 leading-relaxed">{faq.answer}</p>
+                </details>
+              ))}
+            </div>
+          </div>
         </div>
       </section>
     </div>
