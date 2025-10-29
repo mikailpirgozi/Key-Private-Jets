@@ -5,26 +5,26 @@
 
 export const AIRCRAFT_IMAGES = {
   'light-jets': {
-    main: 'https://images.unsplash.com/photo-1540962351516-ee8131d9ed72?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600',
-    thumb: 'https://images.unsplash.com/photo-1540962351516-ee8131d9ed72?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300',
+    main: 'https://images.unsplash.com/photo-1496442226666-8d4d0e62e6e9?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600',
+    thumb: 'https://images.unsplash.com/photo-1496442226666-8d4d0e62e6e9?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300',
     alt: 'Light private jet in flight',
     color: '#D4AF37',
   },
   'midsize-jets': {
-    main: 'https://images.unsplash.com/photo-1583391733183-6ceee0b8e2c0?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600',
-    thumb: 'https://images.unsplash.com/photo-1583391733183-6ceee0b8e2c0?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300',
+    main: 'https://images.unsplash.com/photo-1579460979017-a8a6a5a8e496?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600',
+    thumb: 'https://images.unsplash.com/photo-1579460979017-a8a6a5a8e496?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300',
     alt: 'Midsize private jet',
     color: '#E6C200',
   },
   'super-midsize-jets': {
-    main: 'https://images.unsplash.com/photo-1550355291-bbee04a37971?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600',
-    thumb: 'https://images.unsplash.com/photo-1550355291-bbee04a37971?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300',
+    main: 'https://images.unsplash.com/photo-1576402187392-3901d3a8c869?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600',
+    thumb: 'https://images.unsplash.com/photo-1576402187392-3901d3a8c869?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300',
     alt: 'Super midsize luxury jet',
     color: '#F0AD4E',
   },
   'heavy-jets': {
-    main: 'https://images.unsplash.com/photo-1449824913935-59a10b8d2000?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600',
-    thumb: 'https://images.unsplash.com/photo-1449824913935-59a10b8d2000?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300',
+    main: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600',
+    thumb: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300',
     alt: 'Heavy luxury private jet',
     color: '#FFD700',
   },
