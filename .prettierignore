@@ -6,4 +6,7 @@ build
 *.lock
 package-lock.json
 pnpm-lock.yaml
-
+.vercel
+coverage
+playwright-report
+test-results

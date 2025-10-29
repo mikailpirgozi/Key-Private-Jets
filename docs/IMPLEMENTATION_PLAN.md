@@ -3253,12 +3253,1323 @@ Tests run automatically on:
 
 ## PHASE 7: DEPLOYMENT & MONITORING (Day 7)
 
-### Step 7.1: Vercel Deployment
+### Step 7.1: Prepare for Vercel Deployment
+
+Create `vercel.json`:
+
+```json
+{
+  "buildCommand": "pnpm build",
+  "devCommand": "pnpm dev",
+  "installCommand": "pnpm install",
+  "framework": "nextjs",
+  "regions": ["iad1"],
+  "env": {
+    "NEXT_PUBLIC_SITE_URL": "https://keyprivatejet.com",
+    "NEXT_PUBLIC_SITE_NAME": "KeyPrivateJet"
+  },
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "X-Frame-Options",
+          "value": "DENY"
+        },
+        {
+          "key": "X-XSS-Protection",
+          "value": "1; mode=block"
+        },
+        {
+          "key": "Referrer-Policy",
+          "value": "strict-origin-when-cross-origin"
+        },
+        {
+          "key": "Permissions-Policy",
+          "value": "camera=(), microphone=(), geolocation=()"
+        }
+      ]
+    }
+  ],
+  "redirects": [
+    {
+      "source": "/home",
+      "destination": "/",
+      "permanent": true
+    }
+  ]
+}
+```
+
+Update `next.config.js` for production:
+
+```javascript
+/** @type {import('next').NextConfig} */
+const nextConfig = {
+  reactStrictMode: true,
+  poweredByHeader: false,
+  compress: true,
+  
+  images: {
+    domains: ['keyprivatejet.com'],
+    formats: ['image/avif', 'image/webp'],
+    deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048, 3840],
+    imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
+  },
+  
+  // Enable SWC minification
+  swcMinify: true,
+  
+  // Optimize production builds
+  compiler: {
+    removeConsole: process.env.NODE_ENV === 'production',
+  },
+  
+  // Security headers
+  async headers() {
+    return [
+      {
+        source: '/:path*',
+        headers: [
+          {
+            key: 'X-DNS-Prefetch-Control',
+            value: 'on'
+          },
+          {
+            key: 'Strict-Transport-Security',
+            value: 'max-age=63072000; includeSubDomains; preload'
+          },
+          {
+            key: 'X-Content-Type-Options',
+            value: 'nosniff'
+          },
+          {
+            key: 'X-Frame-Options',
+            value: 'SAMEORIGIN'
+          },
+          {
+            key: 'X-XSS-Protection',
+            value: '1; mode=block'
+          },
+          {
+            key: 'Referrer-Policy',
+            value: 'origin-when-cross-origin'
+          }
+        ],
+      },
+    ]
+  },
+  
+  // Redirects
+  async redirects() {
+    return [
+      {
+        source: '/home',
+        destination: '/',
+        permanent: true,
+      },
+    ]
+  },
+}
+
+// Sentry configuration
+const { withSentryConfig } = require('@sentry/nextjs')
+
+module.exports = process.env.SENTRY_AUTH_TOKEN
+  ? withSentryConfig(nextConfig, {
+      silent: true,
+      org: process.env.SENTRY_ORG,
+      project: process.env.SENTRY_PROJECT,
+    })
+  : nextConfig
+```
+
 ### Step 7.2: Environment Variables Setup
+
+Create `.env.production` template:
+
+```bash
+# Production Environment Variables
+# Copy this to Vercel Environment Variables
+
+# Site Configuration
+NEXT_PUBLIC_SITE_URL=https://keyprivatejet.com
+NEXT_PUBLIC_SITE_NAME=KeyPrivateJet
+NODE_ENV=production
+
+# Supabase (Production)
+NEXT_PUBLIC_SUPABASE_URL=your_production_supabase_url
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your_production_anon_key
+SUPABASE_SERVICE_ROLE_KEY=your_production_service_role_key
+
+# Resend (Production)
+RESEND_API_KEY=re_your_production_api_key
+
+# Contact Information
+ADMIN_EMAIL=info@keyprivatejet.com
+ADMIN_NAME=KeyPrivateJet Team
+NEXT_PUBLIC_PHONE=+18555558888
+NEXT_PUBLIC_PHONE_DISPLAY=(855) 555-8888
+
+# Affiliate Partners
+VILLIERS_EMAIL=leads@villiersjets.com
+VILLIERS_REFERRAL_CODE=KPJ-VILLIERS-2025
+JETTLY_EMAIL=affiliates@jettly.com
+JETTLY_REFERRAL_CODE=KPJ-JETTLY-2025
+NUCO_EMAIL=charter@nucojets.com
+NUCO_REFERRAL_CODE=KPJ-NUCO-2025
+
+# Analytics
+NEXT_PUBLIC_GA_ID=G-XXXXXXXXXX
+NEXT_PUBLIC_GTM_ID=GTM-XXXXXXX
+NEXT_PUBLIC_FB_PIXEL_ID=XXXXXXXXXXXXXXX
+
+# Sentry Error Monitoring
+NEXT_PUBLIC_SENTRY_DSN=https://xxxxx@sentry.io/xxxxx
+SENTRY_AUTH_TOKEN=your_sentry_auth_token
+SENTRY_ORG=keyprivatejet
+SENTRY_PROJECT=keyprivatejet-web
+
+# Rate Limiting
+RATE_LIMIT_MAX_REQUESTS=10
+RATE_LIMIT_WINDOW_MS=60000
+
+# GDPR Compliance
+DATA_RETENTION_DAYS=730
+COOKIE_CONSENT_REQUIRED=true
+```
+
+Create deployment checklist `docs/DEPLOYMENT_CHECKLIST.md`:
+
+```markdown
+# Deployment Checklist
+
+## Pre-Deployment
+
+### Code Quality
+- [ ] All tests passing (`pnpm test:all`)
+- [ ] TypeScript compilation successful (`pnpm typecheck`)
+- [ ] No linter errors (`pnpm lint`)
+- [ ] Code formatted (`pnpm format`)
+- [ ] Build successful locally (`pnpm build`)
+
+### Environment Variables
+- [ ] All production env vars set in Vercel
+- [ ] Supabase production database configured
+- [ ] Resend API key configured
+- [ ] Sentry DSN configured
+- [ ] Analytics IDs configured (GA, GTM, FB Pixel)
+- [ ] Affiliate partner emails verified
+
+### Database
+- [ ] Production database migrations run
+- [ ] Database indexes created
+- [ ] Row Level Security policies configured
+- [ ] Backup strategy in place
+
+### Content
+- [ ] All images optimized (< 200KB)
+- [ ] OG images generated for key pages
+- [ ] Favicon and app icons in place
+- [ ] robots.txt configured
+- [ ] sitemap.xml generated
+
+### SEO
+- [ ] Meta tags on all pages
+- [ ] Schema markup implemented
+- [ ] Canonical URLs set
+- [ ] 404 page created
+- [ ] Redirects configured
+
+### Security
+- [ ] Security headers configured
+- [ ] HTTPS enforced
+- [ ] Rate limiting enabled
+- [ ] GDPR compliance implemented
+- [ ] Cookie consent banner ready
+
+## Deployment Steps
+
+### 1. Connect to Vercel
+```bash
+# Install Vercel CLI
+pnpm add -g vercel
+
+# Login to Vercel
+vercel login
+
+# Link project
+vercel link
+```
+
+### 2. Set Environment Variables
+```bash
+# Set all production environment variables in Vercel dashboard
+# Or use CLI:
+vercel env add NEXT_PUBLIC_SITE_URL production
+vercel env add NEXT_PUBLIC_SUPABASE_URL production
+# ... etc
+```
+
+### 3. Deploy to Preview
+```bash
+# Deploy to preview environment first
+vercel
+
+# Test preview deployment thoroughly
+# Check all critical flows
+```
+
+### 4. Deploy to Production
+```bash
+# Deploy to production
+vercel --prod
+
+# Or push to main branch (if auto-deploy enabled)
+git push origin main
+```
+
+## Post-Deployment
+
+### Immediate Checks (Within 5 minutes)
+- [ ] Homepage loads successfully
+- [ ] Quote form submits successfully
+- [ ] Email notifications working
+- [ ] Database connections working
+- [ ] No console errors
+- [ ] Mobile responsive
+- [ ] SSL certificate active
+
+### Performance Checks (Within 30 minutes)
+- [ ] Lighthouse score > 80
+- [ ] Page load time < 3s
+- [ ] Images loading properly
+- [ ] Fonts loading correctly
+- [ ] No 404 errors
+
+### SEO Checks (Within 1 hour)
+- [ ] sitemap.xml accessible
+- [ ] robots.txt accessible
+- [ ] Meta tags correct
+- [ ] Schema markup valid (test with Google Rich Results)
+- [ ] Open Graph tags working (test with Facebook Debugger)
+
+### Analytics Setup (Within 24 hours)
+- [ ] Google Analytics tracking
+- [ ] Google Tag Manager configured
+- [ ] Facebook Pixel firing
+- [ ] Conversion tracking working
+- [ ] Sentry error tracking active
+
+### Domain Configuration (Within 24 hours)
+- [ ] Custom domain configured
+- [ ] DNS records updated
+- [ ] SSL certificate issued
+- [ ] WWW redirect working
+- [ ] Email forwarding configured
+
+### Monitoring Setup (Within 48 hours)
+- [ ] Uptime monitoring (UptimeRobot or similar)
+- [ ] Error alerts configured (Sentry)
+- [ ] Performance monitoring (Vercel Analytics)
+- [ ] Database monitoring (Supabase)
+- [ ] Email delivery monitoring (Resend)
+
+## Week 1 Post-Launch
+
+### Daily Checks
+- [ ] Check error logs (Sentry)
+- [ ] Monitor form submissions
+- [ ] Review email delivery
+- [ ] Check analytics data
+- [ ] Monitor page speed
+
+### Weekly Tasks
+- [ ] Review conversion rates
+- [ ] Analyze traffic sources
+- [ ] Check affiliate performance
+- [ ] Review user feedback
+- [ ] Update content as needed
+
+## Rollback Plan
+
+If critical issues arise:
+
+```bash
+# Rollback to previous deployment
+vercel rollback
+
+# Or redeploy specific version
+vercel --prod --force
+```
+
+## Emergency Contacts
+
+- **Vercel Support**: support@vercel.com
+- **Supabase Support**: support@supabase.io
+- **Resend Support**: support@resend.com
+- **Domain Registrar**: [Your registrar support]
+```
+
 ### Step 7.3: Domain Configuration
+
+Create `docs/DOMAIN_SETUP.md`:
+
+```markdown
+# Domain Configuration Guide
+
+## DNS Configuration
+
+### Required DNS Records
+
+#### A Records (if using custom nameservers)
+```
+Type: A
+Name: @
+Value: 76.76.21.21
+TTL: 3600
+```
+
+#### CNAME Records
+```
+Type: CNAME
+Name: www
+Value: cname.vercel-dns.com
+TTL: 3600
+```
+
+### Vercel Domain Setup
+
+1. Go to Vercel Dashboard → Project → Settings → Domains
+2. Add domain: `keyprivatejet.com`
+3. Add domain: `www.keyprivatejet.com`
+4. Configure redirect: `www.keyprivatejet.com` → `keyprivatejet.com` (or vice versa)
+
+### SSL Certificate
+
+Vercel automatically provisions SSL certificates via Let's Encrypt.
+- Certificates auto-renew
+- HTTPS enforced by default
+- HTTP → HTTPS redirect automatic
+
+## Email Configuration
+
+### Email Forwarding (Optional)
+
+If using domain email forwarding:
+
+```
+Type: MX
+Name: @
+Priority: 10
+Value: [Your email provider MX record]
+```
+
+### SPF Record (For Resend)
+
+```
+Type: TXT
+Name: @
+Value: v=spf1 include:_spf.resend.com ~all
+```
+
+### DKIM Record (For Resend)
+
+Resend will provide DKIM records after domain verification.
+
+```
+Type: TXT
+Name: resend._domainkey
+Value: [Provided by Resend]
+```
+
+### DMARC Record
+
+```
+Type: TXT
+Name: _dmarc
+Value: v=DMARC1; p=quarantine; rua=mailto:dmarc@keyprivatejet.com
+```
+
+## Verification
+
+### Test Domain Configuration
+
+```bash
+# Check DNS propagation
+dig keyprivatejet.com
+dig www.keyprivatejet.com
+
+# Check SSL certificate
+curl -I https://keyprivatejet.com
+
+# Check redirects
+curl -I http://keyprivatejet.com
+curl -I https://www.keyprivatejet.com
+```
+
+### Verify Email Configuration
+
+```bash
+# Check MX records
+dig MX keyprivatejet.com
+
+# Check SPF
+dig TXT keyprivatejet.com
+
+# Check DKIM
+dig TXT resend._domainkey.keyprivatejet.com
+```
+
+## Troubleshooting
+
+### Domain not resolving
+- Wait 24-48 hours for DNS propagation
+- Check nameservers are correct
+- Verify DNS records in registrar
+
+### SSL certificate issues
+- Ensure DNS is fully propagated
+- Check Vercel domain settings
+- Contact Vercel support if persists
+
+### Email not sending
+- Verify SPF/DKIM records
+- Check Resend domain verification
+- Test with Resend dashboard
+```
+
 ### Step 7.4: Analytics Setup
-### Step 7.5: Error Monitoring
+
+Create `lib/analytics/gtm.ts`:
+
+```typescript
+// Google Tag Manager
+export const GTM_ID = process.env.NEXT_PUBLIC_GTM_ID
+
+export const pageview = (url: string) => {
+  if (typeof window !== 'undefined' && window.dataLayer) {
+    window.dataLayer.push({
+      event: 'pageview',
+      page: url,
+    })
+  }
+}
+
+export const event = ({
+  action,
+  category,
+  label,
+  value,
+}: {
+  action: string
+  category: string
+  label?: string
+  value?: number
+}) => {
+  if (typeof window !== 'undefined' && window.dataLayer) {
+    window.dataLayer.push({
+      event: action,
+      eventCategory: category,
+      eventLabel: label,
+      eventValue: value,
+    })
+  }
+}
+
+// Lead form submission tracking
+export const trackLeadSubmission = (data: {
+  from: string
+  to: string
+  passengers: number
+  aircraft?: string
+}) => {
+  event({
+    action: 'lead_submission',
+    category: 'Lead Generation',
+    label: `${data.from} to ${data.to}`,
+    value: data.passengers,
+  })
+}
+
+// Quote request tracking
+export const trackQuoteRequest = (route: string, aircraft: string) => {
+  event({
+    action: 'quote_request',
+    category: 'Engagement',
+    label: `${route} - ${aircraft}`,
+  })
+}
+
+// Phone click tracking
+export const trackPhoneClick = () => {
+  event({
+    action: 'phone_click',
+    category: 'Contact',
+    label: 'Phone Number',
+  })
+}
+
+// Email click tracking
+export const trackEmailClick = () => {
+  event({
+    action: 'email_click',
+    category: 'Contact',
+    label: 'Email Address',
+  })
+}
+```
+
+Create `lib/analytics/ga.ts`:
+
+```typescript
+// Google Analytics
+export const GA_ID = process.env.NEXT_PUBLIC_GA_ID
+
+export const pageview = (url: string) => {
+  if (typeof window !== 'undefined' && window.gtag) {
+    window.gtag('config', GA_ID!, {
+      page_path: url,
+    })
+  }
+}
+
+export const event = ({
+  action,
+  category,
+  label,
+  value,
+}: {
+  action: string
+  category: string
+  label?: string
+  value?: number
+}) => {
+  if (typeof window !== 'undefined' && window.gtag) {
+    window.gtag('event', action, {
+      event_category: category,
+      event_label: label,
+      value: value,
+    })
+  }
+}
+```
+
+Create `lib/analytics/facebook.ts`:
+
+```typescript
+// Facebook Pixel
+export const FB_PIXEL_ID = process.env.NEXT_PUBLIC_FB_PIXEL_ID
+
+export const pageview = () => {
+  if (typeof window !== 'undefined' && window.fbq) {
+    window.fbq('track', 'PageView')
+  }
+}
+
+export const event = (name: string, options = {}) => {
+  if (typeof window !== 'undefined' && window.fbq) {
+    window.fbq('track', name, options)
+  }
+}
+
+// Lead tracking
+export const trackLead = (value: number) => {
+  event('Lead', { value, currency: 'USD' })
+}
+
+// Contact tracking
+export const trackContact = () => {
+  event('Contact')
+}
+```
+
+Update `app/layout.tsx` to include analytics:
+
+```typescript
+import Script from 'next/script'
+import { GTM_ID } from '@/lib/analytics/gtm'
+import { GA_ID } from '@/lib/analytics/ga'
+import { FB_PIXEL_ID } from '@/lib/analytics/facebook'
+
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode
+}) {
+  return (
+    <html lang="en" className={`${inter.variable} ${playfair.variable}`}>
+      <head>
+        {/* Google Tag Manager */}
+        {GTM_ID && (
+          <Script
+            id="gtm-script"
+            strategy="afterInteractive"
+            dangerouslySetInnerHTML={{
+              __html: `
+                (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+                new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+                j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+                'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+                })(window,document,'script','dataLayer','${GTM_ID}');
+              `,
+            }}
+          />
+        )}
+
+        {/* Google Analytics */}
+        {GA_ID && (
+          <>
+            <Script
+              strategy="afterInteractive"
+              src={`https://www.googletagmanager.com/gtag/js?id=${GA_ID}`}
+            />
+            <Script
+              id="ga-script"
+              strategy="afterInteractive"
+              dangerouslySetInnerHTML={{
+                __html: `
+                  window.dataLayer = window.dataLayer || [];
+                  function gtag(){dataLayer.push(arguments);}
+                  gtag('js', new Date());
+                  gtag('config', '${GA_ID}', {
+                    page_path: window.location.pathname,
+                  });
+                `,
+              }}
+            />
+          </>
+        )}
+
+        {/* Facebook Pixel */}
+        {FB_PIXEL_ID && (
+          <Script
+            id="fb-pixel"
+            strategy="afterInteractive"
+            dangerouslySetInnerHTML={{
+              __html: `
+                !function(f,b,e,v,n,t,s)
+                {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+                n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+                if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+                n.queue=[];t=b.createElement(e);t.async=!0;
+                t.src=v;s=b.getElementsByTagName(e)[0];
+                s.parentNode.insertBefore(t,s)}(window, document,'script',
+                'https://connect.facebook.net/en_US/fbevents.js');
+                fbq('init', '${FB_PIXEL_ID}');
+                fbq('track', 'PageView');
+              `,
+            }}
+          />
+        )}
+      </head>
+      <body className={inter.className}>
+        {/* GTM noscript */}
+        {GTM_ID && (
+          <noscript>
+            <iframe
+              src={`https://www.googletagmanager.com/ns.html?id=${GTM_ID}`}
+              height="0"
+              width="0"
+              style={{ display: 'none', visibility: 'hidden' }}
+            />
+          </noscript>
+        )}
+        
+        {children}
+        <Analytics />
+      </body>
+    </html>
+  )
+}
+```
+
+### Step 7.5: Error Monitoring with Sentry
+
+Create `sentry.client.config.ts`:
+
+```typescript
+import * as Sentry from '@sentry/nextjs'
+
+Sentry.init({
+  dsn: process.env.NEXT_PUBLIC_SENTRY_DSN,
+  
+  // Set tracesSampleRate to 1.0 to capture 100% of transactions for performance monitoring.
+  // We recommend adjusting this value in production
+  tracesSampleRate: 0.1,
+  
+  // Capture Replay for 10% of all sessions,
+  // plus for 100% of sessions with an error
+  replaysSessionSampleRate: 0.1,
+  replaysOnErrorSampleRate: 1.0,
+  
+  // Note: if you want to override the automatic release value, do not set a
+  // `release` value here - use the environment variable `SENTRY_RELEASE`, so
+  // that it will also get attached to your source maps
+  
+  environment: process.env.NODE_ENV,
+  
+  beforeSend(event, hint) {
+    // Filter out non-critical errors
+    if (event.exception) {
+      const error = hint.originalException
+      
+      // Ignore network errors
+      if (error && typeof error === 'object' && 'message' in error) {
+        if (error.message?.includes('Network request failed')) {
+          return null
+        }
+      }
+    }
+    
+    return event
+  },
+  
+  ignoreErrors: [
+    // Browser extensions
+    'top.GLOBALS',
+    // Random plugins/extensions
+    'originalCreateNotification',
+    'canvas.contentDocument',
+    'MyApp_RemoveAllHighlights',
+    // Facebook errors
+    'fb_xd_fragment',
+    // Network errors
+    'NetworkError',
+    'Network request failed',
+  ],
+})
+```
+
+Create `sentry.server.config.ts`:
+
+```typescript
+import * as Sentry from '@sentry/nextjs'
+
+Sentry.init({
+  dsn: process.env.NEXT_PUBLIC_SENTRY_DSN,
+  
+  tracesSampleRate: 0.1,
+  
+  environment: process.env.NODE_ENV,
+  
+  beforeSend(event) {
+    // Don't send events in development
+    if (process.env.NODE_ENV === 'development') {
+      return null
+    }
+    
+    return event
+  },
+})
+```
+
+Create `sentry.edge.config.ts`:
+
+```typescript
+import * as Sentry from '@sentry/nextjs'
+
+Sentry.init({
+  dsn: process.env.NEXT_PUBLIC_SENTRY_DSN,
+  
+  tracesSampleRate: 0.1,
+  
+  environment: process.env.NODE_ENV,
+})
+```
+
 ### Step 7.6: Performance Monitoring
 
+Create `lib/monitoring/performance.ts`:
+
+```typescript
+// Web Vitals tracking
+export function reportWebVitals(metric: {
+  id: string
+  name: string
+  label: string
+  value: number
+}) {
+  // Send to analytics
+  if (typeof window !== 'undefined' && window.gtag) {
+    window.gtag('event', metric.name, {
+      event_category: 'Web Vitals',
+      event_label: metric.id,
+      value: Math.round(metric.name === 'CLS' ? metric.value * 1000 : metric.value),
+      non_interaction: true,
+    })
+  }
+  
+  // Log to console in development
+  if (process.env.NODE_ENV === 'development') {
+    console.log(metric)
+  }
+}
+
+// Custom performance marks
+export function markPerformance(name: string) {
+  if (typeof window !== 'undefined' && window.performance) {
+    window.performance.mark(name)
+  }
+}
+
+export function measurePerformance(name: string, startMark: string, endMark: string) {
+  if (typeof window !== 'undefined' && window.performance) {
+    window.performance.measure(name, startMark, endMark)
+    
+    const measure = window.performance.getEntriesByName(name)[0]
+    
+    // Send to analytics
+    if (window.gtag) {
+      window.gtag('event', 'timing_complete', {
+        name: name,
+        value: Math.round(measure.duration),
+        event_category: 'Performance',
+      })
+    }
+  }
+}
+```
+
+Create `app/monitoring/page.tsx` (internal monitoring dashboard):
+
+```typescript
+'use client'
+
+import { useEffect, useState } from 'react'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+
+export default function MonitoringPage() {
+  const [metrics, setMetrics] = useState({
+    leads: 0,
+    conversions: 0,
+    avgResponseTime: 0,
+    errorRate: 0,
+  })
+
+  useEffect(() => {
+    // Fetch metrics from API
+    // This would be protected by authentication in production
+    fetch('/api/admin/metrics')
+      .then((res) => res.json())
+      .then((data) => setMetrics(data))
+  }, [])
+
+  return (
+    <div className="container mx-auto p-8">
+      <h1 className="text-3xl font-bold mb-8">System Monitoring</h1>
+      
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <Card>
+          <CardHeader>
+            <CardTitle>Total Leads</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p className="text-4xl font-bold">{metrics.leads}</p>
+          </CardContent>
+        </Card>
+        
+        <Card>
+          <CardHeader>
+            <CardTitle>Conversions</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p className="text-4xl font-bold">{metrics.conversions}</p>
+          </CardContent>
+        </Card>
+        
+        <Card>
+          <CardHeader>
+            <CardTitle>Avg Response Time</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p className="text-4xl font-bold">{metrics.avgResponseTime}ms</p>
+          </CardContent>
+        </Card>
+        
+        <Card>
+          <CardHeader>
+            <CardTitle>Error Rate</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p className="text-4xl font-bold">{metrics.errorRate}%</p>
+          </CardContent>
+        </Card>
+      </div>
+    </div>
+  )
+}
+```
+
+### Step 7.7: Health Check Endpoint
+
+Create `app/api/health/route.ts`:
+
+```typescript
+import { NextResponse } from 'next/server'
+import { supabaseAdmin } from '@/lib/supabase/server'
+
+export const dynamic = 'force-dynamic'
+
+export async function GET() {
+  const checks = {
+    status: 'healthy',
+    timestamp: new Date().toISOString(),
+    checks: {
+      database: false,
+      email: false,
+    },
+  }
+
+  try {
+    // Check database connection
+    const { error: dbError } = await supabaseAdmin
+      .from('leads')
+      .select('count')
+      .limit(1)
+
+    checks.checks.database = !dbError
+
+    // Check email service (Resend)
+    // In production, you might want to do a more thorough check
+    checks.checks.email = !!process.env.RESEND_API_KEY
+
+    // Determine overall status
+    const allHealthy = Object.values(checks.checks).every((check) => check === true)
+    checks.status = allHealthy ? 'healthy' : 'degraded'
+
+    return NextResponse.json(checks, {
+      status: allHealthy ? 200 : 503,
+    })
+  } catch (error) {
+    return NextResponse.json(
+      {
+        status: 'unhealthy',
+        timestamp: new Date().toISOString(),
+        error: 'Health check failed',
+      },
+      { status: 503 }
+    )
+  }
+}
+```
+
+### Step 7.8: Uptime Monitoring Setup
+
+Create `docs/MONITORING_SETUP.md`:
+
+```markdown
+# Monitoring & Alerting Setup
+
+## Uptime Monitoring
+
+### UptimeRobot (Free Tier)
+
+1. Sign up at https://uptimerobot.com
+2. Add HTTP(s) monitor:
+   - URL: `https://keyprivatejet.com`
+   - Monitoring Interval: 5 minutes
+   - Monitor Type: HTTP(s)
+   - Alert Contacts: Your email
+
+3. Add Health Check monitor:
+   - URL: `https://keyprivatejet.com/api/health`
+   - Monitoring Interval: 5 minutes
+   - Expected Status: 200
+
+### Better Uptime (Alternative)
+
+1. Sign up at https://betteruptime.com
+2. Create monitor for homepage
+3. Create monitor for health endpoint
+4. Set up alert channels (email, Slack, SMS)
+
+## Error Monitoring (Sentry)
+
+### Setup
+1. Create Sentry account at https://sentry.io
+2. Create new project (Next.js)
+3. Copy DSN to environment variables
+4. Configure alerts:
+   - Email on new issues
+   - Slack integration (optional)
+   - Weekly summary reports
+
+### Alert Rules
+- Critical errors: Immediate notification
+- High volume errors: Threshold alert (> 10/min)
+- Performance degradation: P95 > 3s
+
+## Performance Monitoring
+
+### Vercel Analytics
+- Automatically enabled for Vercel deployments
+- Monitor Core Web Vitals
+- Track page load times
+- Review in Vercel Dashboard
+
+### Google PageSpeed Insights
+- Weekly manual checks
+- Monitor mobile/desktop scores
+- Track Core Web Vitals trends
+
+## Database Monitoring (Supabase)
+
+### Metrics to Monitor
+- Connection pool usage
+- Query performance
+- Storage usage
+- API request volume
+
+### Alerts
+- Connection pool > 80%
+- Storage > 80%
+- Slow queries > 1s
+
+## Email Monitoring (Resend)
+
+### Metrics to Track
+- Delivery rate
+- Bounce rate
+- Open rate (if tracking enabled)
+- Failed sends
+
+### Alerts
+- Delivery rate < 95%
+- Bounce rate > 5%
+- Failed sends > 10/day
+
+## Custom Metrics
+
+### Business Metrics
+- Lead submissions per day
+- Conversion rate
+- Average response time
+- Affiliate performance
+
+### Technical Metrics
+- API response times
+- Error rates by endpoint
+- Rate limit hits
+- Cache hit rates
+
+## Alert Channels
+
+### Email
+- Critical issues: Immediate
+- Daily summary: 9 AM
+- Weekly report: Monday 9 AM
+
+### Slack (Optional)
+- Create #alerts channel
+- Integrate Sentry
+- Integrate UptimeRobot
+- Integrate Vercel
+
+### SMS (Optional)
+- Only for critical downtime
+- Use Twilio or similar service
+
+## Incident Response
+
+### Severity Levels
+
+**P0 - Critical**
+- Site completely down
+- Database unavailable
+- Response: Immediate (< 5 min)
+
+**P1 - High**
+- Major feature broken
+- High error rate
+- Response: < 30 min
+
+**P2 - Medium**
+- Minor feature broken
+- Degraded performance
+- Response: < 2 hours
+
+**P3 - Low**
+- Cosmetic issues
+- Low-impact bugs
+- Response: Next business day
+
+### Incident Checklist
+
+1. **Acknowledge**
+   - Confirm issue
+   - Assess severity
+   - Notify team
+
+2. **Investigate**
+   - Check error logs (Sentry)
+   - Review recent deployments
+   - Check external services
+
+3. **Resolve**
+   - Apply fix
+   - Deploy to production
+   - Verify resolution
+
+4. **Communicate**
+   - Update status page (if applicable)
+   - Notify affected users
+   - Document incident
+
+5. **Post-Mortem**
+   - Root cause analysis
+   - Prevention measures
+   - Update runbooks
+```
+
 ---
+
+## PHASE 8: POST-LAUNCH OPTIMIZATION (Week 2+)
+
+### Step 8.1: SEO Optimization
+
+**Week 1-2 Tasks:**
+- Submit sitemap to Google Search Console
+- Submit sitemap to Bing Webmaster Tools
+- Set up Google My Business (if applicable)
+- Create backlink strategy
+- Guest posting outreach
+- Industry directory submissions
+
+**Ongoing SEO:**
+- Monitor keyword rankings (weekly)
+- Analyze search console data
+- Update content based on performance
+- Add new route pages for high-volume searches
+- Build quality backlinks
+
+### Step 8.2: Conversion Rate Optimization
+
+**A/B Testing Ideas:**
+- Hero headline variations
+- CTA button colors/text
+- Form field order
+- Trust signals placement
+- Pricing display format
+
+**Tools:**
+- Google Optimize (free)
+- Vercel Edge Config for A/B tests
+- Hotjar for heatmaps (optional)
+
+### Step 8.3: Content Marketing
+
+**Blog Topics (SEO-driven):**
+- "How Much Does a Private Jet Cost?"
+- "Private Jet vs First Class: Which is Better?"
+- "Top 10 Private Jet Routes in the US"
+- "Private Jet Charter Guide for First-Timers"
+- "Empty Leg Flights: How to Save 75%"
+
+**Content Calendar:**
+- 2 blog posts per week
+- 1 case study per month
+- Monthly newsletter
+- Social media posts (3x/week)
+
+### Step 8.4: Performance Optimization
+
+**Image Optimization:**
+- Convert to WebP/AVIF
+- Implement lazy loading
+- Use Next.js Image component
+- CDN for static assets
+
+**Code Optimization:**
+- Bundle size analysis
+- Remove unused dependencies
+- Code splitting
+- Dynamic imports
+
+**Caching Strategy:**
+- Static page caching
+- API response caching
+- CDN caching headers
+- Browser caching
+
+### Step 8.5: User Feedback Loop
+
+**Collect Feedback:**
+- Post-submission survey
+- Exit intent surveys
+- User testing sessions
+- Customer interviews
+
+**Implement Improvements:**
+- Prioritize based on impact
+- Quick wins first
+- Track improvement metrics
+- Iterate continuously
+
+---
+
+## FINAL CHECKLIST
+
+### Pre-Launch
+- [ ] All phases 1-6 completed
+- [ ] All tests passing
+- [ ] Production environment configured
+- [ ] Domain configured
+- [ ] SSL certificate active
+- [ ] Analytics tracking
+- [ ] Error monitoring active
+
+### Launch Day
+- [ ] Deploy to production
+- [ ] Verify all functionality
+- [ ] Monitor error logs
+- [ ] Check analytics tracking
+- [ ] Test lead submissions
+- [ ] Verify email delivery
+
+### Week 1 Post-Launch
+- [ ] Daily error log review
+- [ ] Monitor conversion rates
+- [ ] Check affiliate feedback
+- [ ] Review analytics data
+- [ ] Address any issues
+
+### Month 1 Post-Launch
+- [ ] SEO performance review
+- [ ] Conversion rate analysis
+- [ ] User feedback review
+- [ ] Content marketing started
+- [ ] Optimization roadmap
+
+---
+
+## SUCCESS METRICS
+
+### Technical Metrics
+- **Uptime**: > 99.9%
+- **Page Load Time**: < 3s
+- **Lighthouse Score**: > 80
+- **Error Rate**: < 0.1%
+
+### Business Metrics
+- **Lead Submissions**: Track daily
+- **Conversion Rate**: Target 2-5%
+- **Average Response Time**: < 2 hours
+- **Affiliate Satisfaction**: Monthly survey
+
+### SEO Metrics
+- **Organic Traffic**: Track weekly
+- **Keyword Rankings**: Monitor top 50
+- **Backlinks**: Track monthly growth
+- **Domain Authority**: Track quarterly
+
+---
+
+**🎉 IMPLEMENTATION COMPLETE!**
+
+This comprehensive plan covers everything from initial setup to post-launch optimization. Follow each phase sequentially, ensuring quality at every step. The platform is designed to scale, perform well, and convert visitors into leads effectively.
 
