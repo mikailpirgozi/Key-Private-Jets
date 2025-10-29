@@ -1,6 +1,7 @@
 import { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { generateAircraftMetadata } from '@/lib/seo'
+import { generateProductSchema, generateBreadcrumbSchema, generateFAQSchema, injectSchema } from '@/lib/schema'
 import { getAircraftBySlug, AIRCRAFT_CATEGORIES } from '@/lib/data/aircraft'
 import { QuoteForm } from '@/components/forms/quote-form'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
@@ -39,8 +40,50 @@ export default function AircraftCategoryPage({ params }: AircraftPageProps) {
     notFound()
   }
 
+  const aircraftFAQs = [
+    {
+      question: `What is a ${aircraft.name}?`,
+      answer: `A ${aircraft.name} is a ${aircraft.name.toLowerCase()} jet with capacity for ${aircraft.capacity} passengers and a range of ${aircraft.range} miles.`,
+    },
+    {
+      question: `How much does it cost to charter a ${aircraft.name}?`,
+      answer: `The hourly rate for a ${aircraft.name} is between ${formatCurrency(aircraft.hourlyRate.from)} and ${formatCurrency(aircraft.hourlyRate.to)} per hour, depending on availability and season.`,
+    },
+    {
+      question: `What is the capacity of a ${aircraft.name}?`,
+      answer: `The ${aircraft.name} can accommodate ${aircraft.capacity} passengers in comfort with ${aircraft.features.join(', ')}.`,
+    },
+    {
+      question: `What is the maximum flight range of a ${aircraft.name}?`,
+      answer: `A ${aircraft.name} has a maximum range of ${aircraft.range} miles, allowing for transcontinental flights with minimal stops.`,
+    },
+    {
+      question: `What amenities are included on a ${aircraft.name}?`,
+      answer: `Amenities include: ${aircraft.features.join(', ')}, plus catering, entertainment systems, and more.`,
+    },
+  ]
+
+  const productSchema = generateProductSchema({
+    name: `${aircraft.name} Charter - Pricing & Availability`,
+    description: `Charter a ${aircraft.name}. Capacity: ${aircraft.capacity}. Range: ${aircraft.range}. Hourly rates from ${formatCurrency(aircraft.hourlyRate.from)}.`,
+    priceFrom: aircraft.hourlyRate.from,
+    priceTo: aircraft.hourlyRate.to,
+  })
+
+  const breadcrumbSchema = generateBreadcrumbSchema([
+    { name: 'Home', url: '/' },
+    { name: 'Aircraft', url: '/aircraft' },
+    { name: aircraft.name, url: `/aircraft/${aircraft.slug}` },
+  ])
+
+  const faqSchema = generateFAQSchema(aircraftFAQs)
+
   return (
     <div className="py-16">
+      {/* Inject Schemas */}
+      {injectSchema(productSchema)}
+      {injectSchema(breadcrumbSchema)}
+      {injectSchema(faqSchema)}
       {/* Hero Section */}
       <section className="container mx-auto px-4 mb-16">
         <div className="max-w-4xl mx-auto text-center">
