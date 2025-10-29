@@ -5,26 +5,26 @@
 
 export const AIRCRAFT_IMAGES = {
   'light-jets': {
-    main: '/images/jets/light-jet.svg',
-    thumb: '/images/jets/light-jet.svg',
+    main: 'https://images.unsplash.com/photo-1540962351516-ee8131d9ed72?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600',
+    thumb: 'https://images.unsplash.com/photo-1540962351516-ee8131d9ed72?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300',
     alt: 'Light private jet in flight',
     color: '#D4AF37',
   },
   'midsize-jets': {
-    main: '/images/jets/midsize-jet.svg',
-    thumb: '/images/jets/midsize-jet.svg',
+    main: 'https://images.unsplash.com/photo-1583391733183-6ceee0b8e2c0?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600',
+    thumb: 'https://images.unsplash.com/photo-1583391733183-6ceee0b8e2c0?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300',
     alt: 'Midsize private jet',
     color: '#E6C200',
   },
   'super-midsize-jets': {
-    main: '/images/jets/super-midsize-jet.svg',
-    thumb: '/images/jets/super-midsize-jet.svg',
+    main: 'https://images.unsplash.com/photo-1550355291-bbee04a37971?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600',
+    thumb: 'https://images.unsplash.com/photo-1550355291-bbee04a37971?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300',
     alt: 'Super midsize luxury jet',
     color: '#F0AD4E',
   },
   'heavy-jets': {
-    main: '/images/jets/heavy-jet.svg',
-    thumb: '/images/jets/heavy-jet.svg',
+    main: 'https://images.unsplash.com/photo-1449824913935-59a10b8d2000?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600',
+    thumb: 'https://images.unsplash.com/photo-1449824913935-59a10b8d2000?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300',
     alt: 'Heavy luxury private jet',
     color: '#FFD700',
   },
@@ -35,18 +35,18 @@ export const AIRCRAFT_IMAGES = {
  * Each city code maps to iconic skylines and landmarks
  */
 export const CITY_IMAGES: Record<string, string> = {
-  'NYC': '/images/cities/nyc.svg',
-  'LAX': '/images/cities/lax.svg',
-  'MIA': '/images/cities/mia.svg',
-  'LAS': '/images/cities/las.svg',
-  'CHI': '/images/cities/chi.svg',
-  'DAL': '/images/cities/dal.svg',
-  'SFO': '/images/cities/sfo.svg',
-  'BOS': '/images/cities/bos.svg',
-  'HOU': '/images/cities/hou.svg',
-  'DEN': '/images/cities/den.svg',
-  'SEA': '/images/cities/sea.svg',
-  'MCI': '/images/cities/mci.svg',
+  'NYC': 'https://images.unsplash.com/photo-1496442226666-8d4d0e62e6e9?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=500',
+  'LAX': 'https://images.unsplash.com/photo-1579460979017-a8a6a5a8e496?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=500',
+  'MIA': 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=500',
+  'LAS': 'https://images.unsplash.com/photo-1517457373614-b7152f800fd1?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=500',
+  'CHI': 'https://images.unsplash.com/photo-1576402187392-3901d3a8c869?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=500',
+  'DAL': 'https://images.unsplash.com/photo-1522869635100-ce306e08b86d?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=500',
+  'SFO': 'https://images.unsplash.com/photo-1501594907352-04cda38ebc29?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=500',
+  'BOS': 'https://images.unsplash.com/photo-1599996410246-05798589b718?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=500',
+  'HOU': 'https://images.unsplash.com/photo-1599505667736-f4937fb33c33?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=500',
+  'DEN': 'https://images.unsplash.com/photo-1510784519987-3d71bcdd1f11?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=500',
+  'SEA': 'https://images.unsplash.com/photo-1606214174585-fe31582dc1d4?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=500',
+  'MCI': 'https://images.unsplash.com/photo-1549144611-11a5f7a9a8d5?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=500',
 }
 
 /**
@@ -54,7 +54,7 @@ export const CITY_IMAGES: Record<string, string> = {
  * Used for route cards to display destination skylines
  */
 export function getCityImage(cityCode: string): string {
-  return CITY_IMAGES[cityCode] || '/images/cities/default-city.svg'
+  return CITY_IMAGES[cityCode] || 'https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=500'
 }
 
 /**
@@ -70,10 +70,10 @@ export function getAircraftImage(categorySlug: string) {
  * Representing key business values with premium imagery
  */
 export const VALUE_IMAGES = {
-  'safety': '/images/values/safety.svg',
-  'quality': '/images/values/quality.svg',
-  'speed': '/images/values/speed.svg',
-  'reach': '/images/values/reach.svg',
+  'safety': 'https://images.unsplash.com/photo-1552093917-db0afd45e916?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=400',
+  'quality': 'https://images.unsplash.com/photo-1505316714823-8ad7e4e4b300?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=400',
+  'speed': 'https://images.unsplash.com/photo-1551632786-de41ec08fc6d?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=400',
+  'reach': 'https://images.unsplash.com/photo-1526778548025-fa2f459cd5c1?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=400',
 } as const
 
 /**
@@ -81,9 +81,9 @@ export const VALUE_IMAGES = {
  * Images of luxury aircraft and destinations for empty leg deals
  */
 export const EMPTY_LEG_IMAGES: Record<string, string> = {
-  'newyork-miami': '/images/cities/mia.svg',
-  'losangeles-lasvegas': '/images/cities/las.svg',
-  'chicago-newyork': '/images/cities/chi.svg',
+  'newyork-miami': 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&h=400',
+  'losangeles-lasvegas': 'https://images.unsplash.com/photo-1517457373614-b7152f800fd1?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&h=400',
+  'chicago-newyork': 'https://images.unsplash.com/photo-1576402187392-3901d3a8c869?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&h=400',
 }
 
 /**
@@ -98,5 +98,5 @@ export function getValueImage(valueType: string): string {
  * Get empty leg deal image by route
  */
 export function getEmptyLegImage(routeKey: string): string {
-  return EMPTY_LEG_IMAGES[routeKey] || '/images/jets/light-jet.svg'
+  return EMPTY_LEG_IMAGES[routeKey] || 'https://images.unsplash.com/photo-1540962351516-ee8131d9ed72?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&h=400'
 }
