@@ -64,3 +64,38 @@ export function getAircraftImage(categorySlug: string) {
   const key = categorySlug as keyof typeof AIRCRAFT_IMAGES
   return AIRCRAFT_IMAGES[key] || AIRCRAFT_IMAGES['midsize-jets']
 }
+
+/**
+ * Value icon images for About page
+ * Representing key business values with premium imagery
+ */
+export const VALUE_IMAGES: Record<string, string> = {
+  'safety': 'https://images.unsplash.com/photo-1552093917-db0afd45e916?w=400&h=400&fit=crop',
+  'quality': 'https://images.unsplash.com/photo-1505316714823-8ad7e4e4b300?w=400&h=400&fit=crop',
+  'speed': 'https://images.unsplash.com/photo-1551632786-de41ec08fc6d?w=400&h=400&fit=crop',
+  'reach': 'https://images.unsplash.com/photo-1526778548025-fa2f459cd5c1?w=400&h=400&fit=crop',
+}
+
+/**
+ * Empty leg deal images mapped to routes
+ * Images of luxury aircraft and destinations for empty leg deals
+ */
+export const EMPTY_LEG_IMAGES: Record<string, string> = {
+  'newyork-miami': 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=600&h=400&fit=crop',
+  'losangeles-lasvegas': 'https://images.unsplash.com/photo-1517457373614-b7152f800fd1?w=600&h=400&fit=crop',
+  'chicago-newyork': 'https://images.unsplash.com/photo-1576402187392-3901d3a8c869?w=600&h=400&fit=crop',
+}
+
+/**
+ * Get value image by value type
+ */
+export function getValueImage(valueType: string): string {
+  return VALUE_IMAGES[valueType] || VALUE_IMAGES['quality']
+}
+
+/**
+ * Get empty leg deal image by route
+ */
+export function getEmptyLegImage(routeKey: string): string {
+  return EMPTY_LEG_IMAGES[routeKey] || 'https://images.unsplash.com/photo-1540962351516-ee8131d9ed72?w=600&h=400&fit=crop'
+}

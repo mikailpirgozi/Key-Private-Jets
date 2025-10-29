@@ -4,6 +4,8 @@ import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Plane, Clock, DollarSign, TrendingDown, Bell, ArrowRight, Sparkles } from 'lucide-react'
 import Link from 'next/link'
+import Image from 'next/image'
+import { getEmptyLegImage } from '@/lib/data/aircraft-images'
 
 export const metadata: Metadata = generatePageMetadata({
   title: 'Empty Leg Flights - Save Up to 75% on Private Jet Charter',
@@ -26,6 +28,7 @@ export default function EmptyLegsPage() {
       regularPrice: 22000,
       emptyLegPrice: 8500,
       savings: 61,
+      routeKey: 'newyork-miami',
     },
     {
       id: '2',
@@ -38,6 +41,7 @@ export default function EmptyLegsPage() {
       regularPrice: 4500,
       emptyLegPrice: 1800,
       savings: 60,
+      routeKey: 'losangeles-lasvegas',
     },
     {
       id: '3',
@@ -50,6 +54,7 @@ export default function EmptyLegsPage() {
       regularPrice: 16000,
       emptyLegPrice: 5500,
       savings: 66,
+      routeKey: 'chicago-newyork',
     },
   ]
 
@@ -197,15 +202,30 @@ export default function EmptyLegsPage() {
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto mb-8">
             {sampleDeals.map((deal) => (
-              <div key={deal.id} className="luxury-card p-6 group">
-                <div className="flex justify-between items-start mb-4">
-                  <Badge className="bg-gold-500/10 border border-gold-500/30 text-gold-400">
-                    {deal.category}
-                  </Badge>
-                  <Badge className="bg-green-500/10 border border-green-500/30 text-green-400">
-                    Save {deal.savings}%
-                  </Badge>
+              <div key={deal.id} className="group">
+                {/* Image Container */}
+                <div className="relative h-48 w-full overflow-hidden rounded-t-lg bg-luxury-black-lighter mb-0">
+                  <Image
+                    src={getEmptyLegImage(deal.routeKey)}
+                    alt={`${deal.from} to ${deal.to}`}
+                    fill
+                    className="object-cover group-hover:scale-110 transition-transform duration-500"
+                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                    quality={75}
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-luxury-black via-luxury-black/30 to-transparent opacity-70 group-hover:opacity-50 transition-opacity duration-300" />
                 </div>
+                
+                {/* Card Content */}
+                <div className="luxury-card p-6 group rounded-t-none">
+                  <div className="flex justify-between items-start mb-4">
+                    <Badge className="bg-gold-500/10 border border-gold-500/30 text-gold-400">
+                      {deal.category}
+                    </Badge>
+                    <Badge className="bg-green-500/10 border border-green-500/30 text-green-400">
+                      Save {deal.savings}%
+                    </Badge>
+                  </div>
                 
                 <h3 className="text-2xl font-playfair font-bold text-white mb-2 group-hover:text-gold-400 transition-colors duration-300">
                   {deal.from} → {deal.to}
@@ -239,6 +259,7 @@ export default function EmptyLegsPage() {
                 <Button className="w-full bg-gradient-to-r from-gold-400 to-gold-600 hover:from-gold-500 hover:to-gold-700 text-gray-900 font-semibold shadow-lg group-hover:shadow-gold-500/50 transition-all">
                   Book Now
                 </Button>
+                </div>
               </div>
             ))}
           </div>

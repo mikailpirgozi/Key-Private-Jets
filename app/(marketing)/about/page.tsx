@@ -2,6 +2,8 @@ import { Metadata } from 'next'
 import { generatePageMetadata } from '@/lib/seo'
 import { Plane, Shield, Clock, Award, Globe, ArrowRight } from 'lucide-react'
 import Link from 'next/link'
+import Image from 'next/image'
+import { getValueImage } from '@/lib/data/aircraft-images'
 
 export const metadata: Metadata = generatePageMetadata({
   title: 'About KeyPrivateJet - Your Trusted Private Aviation Partner',
@@ -16,21 +18,25 @@ export default function AboutPage() {
       icon: Shield,
       title: 'Safety First',
       description: 'All partner operators are FAA Part 135 certified with rigorous safety standards and experienced crews.',
+      valueType: 'safety',
     },
     {
       icon: Award,
       title: 'Premium Quality',
       description: 'We partner only with top-tier charter operators known for exceptional service and well-maintained aircraft.',
+      valueType: 'quality',
     },
     {
       icon: Clock,
       title: 'Fast Response',
       description: 'Get competitive quotes within 2-4 hours. Our partners understand that your time is valuable.',
+      valueType: 'speed',
     },
     {
       icon: Globe,
       title: 'Global Reach',
       description: 'Access to 5,000+ airports worldwide and a diverse fleet from light jets to ultra-long-range aircraft.',
+      valueType: 'reach',
     },
   ]
 
@@ -145,16 +151,32 @@ export default function AboutPage() {
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {values.map((value) => (
-              <div key={value.title} className="luxury-card p-8 group">
-                <div className="flex flex-col items-center text-center">
-                  <div className="w-20 h-20 bg-gold-500/10 border-2 border-gold-500/30 rounded-full flex items-center justify-center mb-6 group-hover:border-gold-400/60 group-hover:scale-110 transition-all duration-300">
-                    <value.icon className="h-10 w-10 text-gold-500" />
+              <div key={value.title} className="group">
+                {/* Image Container */}
+                <div className="relative h-40 w-full overflow-hidden rounded-t-lg bg-luxury-black-lighter mb-0">
+                  <Image
+                    src={getValueImage(value.valueType)}
+                    alt={value.title}
+                    fill
+                    className="object-cover group-hover:scale-110 transition-transform duration-500"
+                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
+                    quality={75}
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-luxury-black via-luxury-black/40 to-transparent opacity-70 group-hover:opacity-50 transition-opacity duration-300" />
+                </div>
+                
+                {/* Card Content */}
+                <div className="luxury-card p-8 group rounded-t-none">
+                  <div className="flex flex-col items-center text-center">
+                    <div className="w-16 h-16 bg-gold-500/10 border-2 border-gold-500/30 rounded-full flex items-center justify-center mb-4 group-hover:border-gold-400/60 group-hover:scale-110 transition-all duration-300">
+                      <value.icon className="h-8 w-8 text-gold-500" />
+                    </div>
+                    <h3 className="text-lg font-semibold text-white mb-3 group-hover:text-gold-400 transition-colors duration-300">
+                      {value.title}
+                    </h3>
+                    <div className="h-px bg-gradient-to-r from-transparent via-gold-500/30 to-transparent w-full mb-3" />
+                    <p className="text-gray-400 text-sm leading-relaxed">{value.description}</p>
                   </div>
-                  <h3 className="text-xl font-semibold text-white mb-3 group-hover:text-gold-400 transition-colors duration-300">
-                    {value.title}
-                  </h3>
-                  <div className="h-px bg-gradient-to-r from-transparent via-gold-500/30 to-transparent w-full mb-3" />
-                  <p className="text-gray-400 leading-relaxed">{value.description}</p>
                 </div>
               </div>
             ))}
