@@ -1,0 +1,36 @@
+<svg viewBox="0 0 800 600" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="skyGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#87CEEB;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#E0FFFF;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="jetGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#D4AF37;stop-opacity:0.9" />
+      <stop offset="50%" style="stop-color:#FFD700;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#B8860B;stop-opacity:0.8" />
+    </linearGradient>
+  </defs>
+  <rect width="800" height="600" fill="url(#skyGradient)"/>
+  <!-- Super Midsize Private Jet -->
+  <ellipse cx="400" cy="300" rx="220" ry="80" fill="url(#jetGradient)"/>
+  <rect x="220" y="265" width="360" height="70" rx="35" fill="url(#jetGradient)"/>
+  <!-- Cockpit -->
+  <ellipse cx="245" cy="295" rx="32" ry="28" fill="#FFD700" opacity="0.8"/>
+  <!-- Windows -->
+  <circle cx="285" cy="290" r="10" fill="#87CEEB" opacity="0.8"/>
+  <circle cx="320" cy="290" r="10" fill="#87CEEB" opacity="0.8"/>
+  <circle cx="355" cy="290" r="10" fill="#87CEEB" opacity="0.8"/>
+  <circle cx="385" cy="290" r="9" fill="#87CEEB" opacity="0.75"/>
+  <!-- Wings -->
+  <polygon points="400,265 600,200 600,270" fill="url(#jetGradient)" opacity="0.85"/>
+  <polygon points="400,335 600,400 600,330" fill="url(#jetGradient)" opacity="0.75"/>
+  <!-- Tail -->
+  <polygon points="580,295 650,315 650,330" fill="#D4AF37"/>
+  <!-- Vertical stabilizer -->
+  <polygon points="640,295 670,220 670,380" fill="#B8860B" opacity="0.85"/>
+  <!-- Landing gear -->
+  <rect x="370" y="335" width="6" height="60" fill="#333"/>
+  <rect x="430" y="335" width="6" height="60" fill="#333"/>
+  <text x="400" y="420" font-size="32" font-weight="bold" text-anchor="middle" fill="#D4AF37">Super Midsize</text>
+  <text x="400" y="460" font-size="16" text-anchor="middle" fill="#666">8-10 Passengers</text>
+</svg>

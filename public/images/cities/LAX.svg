@@ -1,0 +1,26 @@
+<svg viewBox="0 0 800 500" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="skyGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#1a1f3a;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#2d1b4e;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="goldGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#D4AF37;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#9d8428;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  <rect width="800" height="500" fill="url(#skyGradient)"/>
+  <!-- Palm trees -->
+  <rect x="80" y="350" width="8" height="100" fill="#8B4513"/>
+  <circle cx="84" cy="330" r="35" fill="#228B22"/>
+  <rect x="150" y="360" width="8" height="90" fill="#8B4513"/>
+  <circle cx="154" cy="340" r="30" fill="#228B22"/>
+  <!-- Sun -->
+  <circle cx="700" cy="100" r="40" fill="#FFD700" opacity="0.6"/>
+  <!-- Simple buildings (more spread out like LA) -->
+  <rect x="200" y="280" width="50" height="200" fill="url(#goldGradient)" opacity="0.7"/>
+  <rect x="320" y="320" width="45" height="160" fill="url(#goldGradient)" opacity="0.6"/>
+  <rect x="450" y="290" width="55" height="190" fill="url(#goldGradient)" opacity="0.7"/>
+  <rect x="580" y="310" width="50" height="170" fill="url(#goldGradient)" opacity="0.65"/>
+  <text x="400" y="420" font-size="24" font-weight="bold" text-anchor="middle" fill="#D4AF37">LAX</text>
+</svg>

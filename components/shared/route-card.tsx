@@ -10,7 +10,7 @@ interface RouteCardProps {
   index?: number
 }
 
-export function RouteCard({ route, index = 0 }: RouteCardProps) {
+export function RouteCard({ route }: RouteCardProps) {
   // Use destination city image (or source as fallback)
   const cityImage = getCityImage(route.to)
   
