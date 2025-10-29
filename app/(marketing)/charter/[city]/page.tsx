@@ -1,5 +1,3 @@
-'use client'
-
 import { notFound } from 'next/navigation'
 import { Metadata } from 'next'
 import { MAJOR_CITIES, getCityBySlug } from '@/lib/data/cities'

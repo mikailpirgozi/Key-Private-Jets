@@ -1,5 +1,3 @@
-'use client'
-
 import { Metadata } from 'next'
 import { generatePageMetadata } from '@/lib/seo'
 import { Button } from '@/components/ui/button'
